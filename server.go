@@ -1,0 +1,33 @@
+package main
+import(
+	"net/http"
+)
+
+type Server struct {
+	port string
+	router *Router
+}
+
+func newServer(port string) *Server  {
+	return &Server{
+		port: port,
+		router: newRouter(),
+	}
+}
+
+func (s *Server) Handle(method string, path string, handler http.HandlerFunc)  {
+	_, exist := s.router.rules[path]
+	if !exist {
+		s.router.rules[path] = make(map[string]http.HandlerFunc)
+	}
+	s.router.rules[path][method] = handler                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+}
+
+func (s *Server) Listen() error  {
+	http.Handle("/", s.router)
+	error := http.ListenAndServe(s.port, nil)
+	if error != nil {
+		return error
+	}
+	return nil
+}
