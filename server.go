@@ -1,33 +1,34 @@
 package main
-import(
+
+import (
 	"net/http"
 )
 
 type Server struct {
-	port string
+	port   string
 	router *Router
 }
 
-func newServer(port string) *Server  {
+func newServer(port string) *Server {
 	return &Server{
-		port: port,
+		port:   port,
 		router: newRouter(),
 	}
 }
 
-func (s *Server) Handle(method string, path string, handler http.HandlerFunc)  {
+func (s *Server) Handle(method string, path string, handler http.HandlerFunc) {
 	_, exist := s.router.rules[path]
 	if !exist {
 		s.router.rules[path] = make(map[string]http.HandlerFunc)
 	}
-	s.router.rules[path][method] = handler                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+	s.router.rules[path][method] = handler
 }
 
-func (s *Server) Listen() error  {
+func (s *Server) Listen() error {
 	http.Handle("/", s.router)
-	error := http.ListenAndServe(s.port, nil)
-	if error != nil {
-		return error
+	err := http.ListenAndServe(s.port, nil)
+	if err != nil {
+		return err
 	}
 	return nil
 }
