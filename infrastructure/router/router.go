@@ -1,22 +1,22 @@
-package main
+package router
 
 import (
 	"net/http"
 )
 
 type Router struct {
-	rules map[string]map[string]http.HandlerFunc
+	Rules map[string]map[string]http.HandlerFunc
 }
 
-func newRouter() *Router {
+func NewRouter() *Router {
 	return &Router{
-		rules: make(map[string]map[string]http.HandlerFunc),
+		Rules: make(map[string]map[string]http.HandlerFunc),
 	}
 }
 
 func (r *Router) findHandler(path string, method string) (http.HandlerFunc, bool, bool) {
-	_, pathExist := r.rules[path]
-	handler, methodExist := r.rules[path][method]
+	_, pathExist := r.Rules[path]
+	handler, methodExist := r.Rules[path][method]
 	return handler, methodExist, pathExist
 }
 

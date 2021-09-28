@@ -1,13 +1,14 @@
-package main
+package controller
 
 import (
+	"academy-go-q32021/infrastructure/datastore"
 	"encoding/json"
 	"fmt"
 	"net/http"
 )
 
-func handleGetAllPokemons(w http.ResponseWriter, r *http.Request) {
-	db := new(Db)
+func HandleGetAllPokemons(w http.ResponseWriter, r *http.Request) {
+	db := new(datastore.Db)
 	db.Init()
 	pokemons, err := db.GetAllPokemons()
 	if err != nil {

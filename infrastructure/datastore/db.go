@@ -1,6 +1,7 @@
-package main
+package datastore
 
 import (
+	"academy-go-q32021/domain/model"
 	"encoding/csv"
 	"fmt"
 	"os"
@@ -27,11 +28,11 @@ func (db *Db) Init() error {
 	return nil
 }
 
-func (db *Db) GetAllPokemons() ([]Pokemon, error) {
-	pokemons := make([]Pokemon, len(db.data))
+func (db *Db) GetAllPokemons() ([]model.Pokemon, error) {
+	pokemons := make([]model.Pokemon, len(db.data))
 	for i, line := range db.data {
 		id, _ := strconv.Atoi(line[0])
-		pokemon := Pokemon{
+		pokemon := model.Pokemon{
 			ID:   id,
 			Name: line[1],
 		}
