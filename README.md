@@ -1,5 +1,10 @@
 # Golang Bootcamp
 
+# Run project with 
+go install
+
+go run *.go
+
 ## Introduction
 
 Thank you for participating in the Golang Bootcamp course!
