@@ -37,14 +37,22 @@ func HandleGetPokemon(db *datastore.Db, w http.ResponseWriter, r *http.Request) 
 	}
 	id, _ := strconv.Atoi(id_str)
 	pokemon, err := db.GetPokemon(id)
+
 	if err != nil {
 		if err.Error() == "pokemon not found" {
-			w.WriteHeader(http.StatusNotFound)
+			pokemonApi, err := db.GetPokemonFromApi(id)
+			if err != nil {
+				w.WriteHeader(http.StatusNotFound)
+				return
+			} else {
+				db.SavePokemon(&pokemonApi)
+				pokemon = pokemonApi
+			}
 		} else {
+			fmt.Fprint(w, err.Error())
 			w.WriteHeader(http.StatusInternalServerError)
+			return
 		}
-		fmt.Fprint(w, err.Error())
-		return
 	}
 	response, err := json.Marshal(pokemon)
 	if err != nil {
