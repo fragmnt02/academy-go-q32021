@@ -9,4 +9,5 @@ import (
 func GetPokemonRouter(r *mux.Router, app *controller.App) {
 	r.HandleFunc("", app.HandleRequest(controller.HandleGetAllPokemons))
 	r.HandleFunc("/", app.HandleRequest(controller.HandleGetAllPokemons))
+	r.HandleFunc("/{id}", app.HandleRequest(controller.HandleGetPokemon))
 }

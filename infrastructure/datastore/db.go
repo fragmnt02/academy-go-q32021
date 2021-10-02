@@ -3,6 +3,7 @@ package datastore
 import (
 	"academy-go-q32021/domain/model"
 	"encoding/csv"
+	"errors"
 	"fmt"
 	"os"
 	"strconv"
@@ -39,4 +40,21 @@ func (db *Db) GetAllPokemons() ([]model.Pokemon, error) {
 		pokemons[i] = pokemon
 	}
 	return pokemons, nil
+}
+
+func (db *Db) GetPokemon(id_pokemon int) (model.Pokemon, error) {
+	var pokemon model.Pokemon
+	for _, line := range db.data {
+		id, _ := strconv.Atoi(line[0])
+		if id_pokemon == id {
+			pokemon = model.Pokemon{
+				ID:   id,
+				Name: line[1],
+			}
+		}
+	}
+	if pokemon.ID == 0 && pokemon.Name == "" {
+		return pokemon, errors.New("pokemon not found")
+	}
+	return pokemon, nil
 }
