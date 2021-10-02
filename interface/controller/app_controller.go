@@ -1,35 +1,33 @@
 package controller
 
 import (
-	"academy-go-q32021/infrastructure/router"
+	"academy-go-q32021/infrastructure/datastore"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
-type Server struct {
-	port   string
-	router *router.Router
+type App struct {
+	DB     *datastore.Db
+	Router *mux.Router
 }
 
-func NewServer(port string) *Server {
-	return &Server{
-		port:   port,
-		router: router.NewRouter(),
-	}
+func InitializeApp(db *datastore.Db) *App {
+	app := new(App)
+	app.DB = db
+	return app
 }
 
-func (s *Server) Handle(method string, path string, handler http.HandlerFunc) {
-	_, exist := s.router.Rules[path]
-	if !exist {
-		s.router.Rules[path] = make(map[string]http.HandlerFunc)
-	}
-	s.router.Rules[path][method] = handler
+func (app *App) Run(router *mux.Router) {
+	app.Router = router
+
+	http.ListenAndServe(":8000", router)
 }
 
-func (s *Server) Listen() error {
-	http.Handle("/", s.router)
-	err := http.ListenAndServe(s.port, nil)
-	if err != nil {
-		return err
+type RequestHandlerFunction func(db *datastore.Db, w http.ResponseWriter, r *http.Request)
+
+func (app *App) HandleRequest(handler RequestHandlerFunction) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		handler(app.DB, w, r)
 	}
-	return nil
 }

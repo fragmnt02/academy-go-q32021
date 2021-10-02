@@ -7,9 +7,7 @@ import (
 	"net/http"
 )
 
-func HandleGetAllPokemons(w http.ResponseWriter, r *http.Request) {
-	db := new(datastore.Db)
-	db.Init()
+func HandleGetAllPokemons(db *datastore.Db, w http.ResponseWriter, r *http.Request) {
 	pokemons, err := db.GetAllPokemons()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
