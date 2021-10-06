@@ -6,8 +6,8 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func GetPokemonRouter(r *mux.Router, app *controller.App) {
-	r.HandleFunc("", app.HandleRequest(controller.HandleGetAllPokemons))
-	r.HandleFunc("/", app.HandleRequest(controller.HandleGetAllPokemons))
-	r.HandleFunc("/{id}", app.HandleRequest(controller.HandleGetPokemon))
+func getPokemonRouter(r *mux.Router, controllers *controller.Controllers) {
+	r.HandleFunc("", controllers.PokemonController.HandleGetAllPokemons)
+	r.HandleFunc("/", controllers.PokemonController.HandleGetAllPokemons)
+	r.HandleFunc("/{id}", controllers.PokemonController.HandleGetPokemon)
 }

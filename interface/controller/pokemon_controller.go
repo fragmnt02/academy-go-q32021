@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"academy-go-q32021/infrastructure/datastore"
+	"academy-go-q32021/interface/repository"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -10,8 +10,16 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func HandleGetAllPokemons(db *datastore.Db, w http.ResponseWriter, r *http.Request) {
-	pokemons, err := db.GetAllPokemons()
+type PokemonController struct {
+	pr *repository.Repositories
+}
+
+func (p *PokemonController) initialize(pr *repository.Repositories) {
+	p.pr = pr
+}
+
+func (p *PokemonController) HandleGetAllPokemons(w http.ResponseWriter, r *http.Request) {
+	pokemons, err := p.pr.PokemonRepository.FindAll()
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		fmt.Fprint(w, err.Error())
@@ -27,7 +35,7 @@ func HandleGetAllPokemons(db *datastore.Db, w http.ResponseWriter, r *http.Reque
 	w.Write(response)
 }
 
-func HandleGetPokemon(db *datastore.Db, w http.ResponseWriter, r *http.Request) {
+func (p *PokemonController) HandleGetPokemon(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id_str := params["id"]
 	if id_str == "" {
@@ -36,16 +44,16 @@ func HandleGetPokemon(db *datastore.Db, w http.ResponseWriter, r *http.Request) 
 		return
 	}
 	id, _ := strconv.Atoi(id_str)
-	pokemon, err := db.GetPokemon(id)
+	pokemon, err := p.pr.PokemonRepository.Find(id)
 
 	if err != nil {
 		if err.Error() == "pokemon not found" {
-			pokemonApi, err := db.GetPokemonFromApi(id)
+			pokemonApi, err := p.pr.PokemonRepository.FindInAPI(id)
 			if err != nil {
 				w.WriteHeader(http.StatusNotFound)
 				return
 			} else {
-				db.SavePokemon(&pokemonApi)
+				p.pr.PokemonRepository.Create(&pokemonApi)
 				pokemon = pokemonApi
 			}
 		} else {
