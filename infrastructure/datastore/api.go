@@ -13,6 +13,6 @@ func (api *API) Init(url string) {
 }
 
 func (api *API) Get(path string) (*http.Response, error) {
-	res, err := http.Get(POKE_API_URL + path)
+	res, err := http.Get(api.url + path)
 	return res, err
 }
