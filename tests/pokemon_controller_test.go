@@ -1,9 +1,12 @@
 package tests
 
 import (
+	"academy-go-q32021/domain/model"
 	"academy-go-q32021/infrastructure/datastore"
 	"academy-go-q32021/interface/controller"
 	"academy-go-q32021/interface/repository"
+	"encoding/json"
+	"io/ioutil"
 	"net/http/httptest"
 	"testing"
 
@@ -31,7 +34,18 @@ func TestHandleGetAllPokemons(t *testing.T) {
 	if res.StatusCode != 200 {
 		t.Fatalf("No successful request")
 	}
-	// TODO Check values
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		t.Fatalf("could not read response: %v", err)
+	}
+	var pokemons []model.Pokemon
+	err = json.Unmarshal(body, &pokemons)
+	if err != nil {
+		t.Fatalf("could not unmarshall response %v", err)
+	}
+	if len(pokemons) != 2 {
+		t.Fatalf("response was incomplete")
+	}
 }
 
 func TestHandleGetPokemon(t *testing.T) {
@@ -50,5 +64,16 @@ func TestHandleGetPokemon(t *testing.T) {
 	if res.StatusCode != 200 {
 		t.Fatalf("No successful request")
 	}
-	// TODO Check values
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		t.Fatalf("could not read response: %v", err)
+	}
+	var pokemon model.Pokemon
+	err = json.Unmarshal(body, &pokemon)
+	if err != nil {
+		t.Fatalf("could not unmarshall response %v", err)
+	}
+	if pokemon.ID != 1 || pokemon.Name != "test pokemon 1" {
+		t.Fatalf("pokemon not found")
+	}
 }
