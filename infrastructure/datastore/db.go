@@ -1,19 +1,20 @@
 package datastore
 
 import (
-	"academy-go-q32021/domain/model"
 	"encoding/csv"
 	"fmt"
 	"os"
-	"strconv"
 )
 
 type Db struct {
-	data [][]string
+	Data [][]string
+	path string
 }
 
-func (db *Db) Init() error {
-	csvFile, err := os.Open("db.csv")
+// Init(path string): Initialize and load the data of the csv database file
+func (db *Db) Init(path string) error {
+	db.path = path
+	csvFile, err := os.Open(db.path)
 	if err != nil {
 		return err
 	}
@@ -24,19 +25,27 @@ func (db *Db) Init() error {
 	if err != nil {
 		return err
 	}
-	db.data = csvLines
+	db.Data = csvLines
 	return nil
 }
 
-func (db *Db) GetAllPokemons() ([]model.Pokemon, error) {
-	pokemons := make([]model.Pokemon, len(db.data))
-	for i, line := range db.data {
-		id, _ := strconv.Atoi(line[0])
-		pokemon := model.Pokemon{
-			ID:   id,
-			Name: line[1],
-		}
-		pokemons[i] = pokemon
+// WriteLine(line []string): Append a new line in the end of the csv database file
+func (db *Db) WriteLine(line []string) error {
+	db.Data = append(db.Data, line)
+
+	f, err := os.Create(db.path)
+	if err != nil {
+		return err
 	}
-	return pokemons, nil
+	defer f.Close()
+
+	w := csv.NewWriter(f)
+	defer w.Flush()
+
+	for _, record := range db.Data {
+		if err := w.Write(record); err != nil {
+			return err
+		}
+	}
+	return nil
 }

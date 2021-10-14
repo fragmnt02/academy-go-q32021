@@ -1,9 +1,19 @@
 package main
 
-import "academy-go-q32021/interface/controller"
+import (
+	"academy-go-q32021/infrastructure/datastore"
+	"academy-go-q32021/infrastructure/router"
+	"academy-go-q32021/interface/controller"
+	"academy-go-q32021/interface/repository"
+	"net/http"
+)
 
 func main() {
-	server := controller.NewServer(":3000")
-	server.Handle("GET", "/pokemons", controller.HandleGetAllPokemons)
-	server.Listen()
+	db := new(datastore.Db)
+	db.Init("db.csv")
+	repositories := repository.GetRepositories(db)
+	controllers := controller.GetControllers(repositories)
+	router := router.GetRouter(controllers)
+	http.ListenAndServe(":8000", router)
+
 }
