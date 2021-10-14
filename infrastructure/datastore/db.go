@@ -8,12 +8,13 @@ import (
 
 type Db struct {
 	Data [][]string
-	url  string
+	path string
 }
 
-func (db *Db) Init(url string) error {
-	db.url = url
-	csvFile, err := os.Open(db.url)
+// Init(path string): Initialize and load the data of the csv database file
+func (db *Db) Init(path string) error {
+	db.path = path
+	csvFile, err := os.Open(db.path)
 	if err != nil {
 		return err
 	}
@@ -28,10 +29,11 @@ func (db *Db) Init(url string) error {
 	return nil
 }
 
+// WriteLine(line []string): Append a new line in the end of the csv database file
 func (db *Db) WriteLine(line []string) error {
 	db.Data = append(db.Data, line)
 
-	f, err := os.Create(db.url)
+	f, err := os.Create(db.path)
 	if err != nil {
 		return err
 	}

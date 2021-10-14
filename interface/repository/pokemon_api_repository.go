@@ -11,16 +11,17 @@ type PokemonAPIRepository struct {
 	apiRepository APIRepository
 }
 
-func (par *PokemonAPIRepository) Init() {
+func (par *PokemonAPIRepository) init() {
 	apiRepository := new(APIRepository)
-	apiRepository.Init("https://pokeapi.co/api/v2/pokemon/")
+	apiRepository.init("https://pokeapi.co/api/v2/pokemon/")
 	par.apiRepository = *apiRepository
 }
 
+// Find(id int): Get the pokemon with the given id in pokeAPI.
 func (par *PokemonAPIRepository) Find(id int) (model.Pokemon, error) {
 	var pokemon model.Pokemon
 	id_pokemon := strconv.Itoa(id)
-	res, err := par.apiRepository.Get(id_pokemon)
+	res, err := par.apiRepository.get(id_pokemon)
 	if err != nil {
 		return pokemon, err
 	}

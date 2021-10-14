@@ -11,7 +11,7 @@ type Controllers struct {
 func GetControllers(r *repository.Repositories) *Controllers {
 	controllers := new(Controllers)
 	pokemonController := new(PokemonController)
-	pokemonController.initialize(r)
+	pokemonController.init(r)
 	controllers.PokemonController = *pokemonController
 	return controllers
 }

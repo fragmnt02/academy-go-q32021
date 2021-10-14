@@ -11,10 +11,11 @@ type PokemonRepository struct {
 	db *datastore.Db
 }
 
-func (p *PokemonRepository) Init(db *datastore.Db) {
+func (p *PokemonRepository) init(db *datastore.Db) {
 	p.db = db
 }
 
+// FindAll():  Return the list of all pokemons in the csv database
 func (p *PokemonRepository) FindAll() ([]model.Pokemon, error) {
 	pokemons := make([]model.Pokemon, len(p.db.Data))
 	for i, line := range p.db.Data {
@@ -28,6 +29,7 @@ func (p *PokemonRepository) FindAll() ([]model.Pokemon, error) {
 	return pokemons, nil
 }
 
+// Find(id int): Get the pokemon with the given id in the csv database
 func (p *PokemonRepository) Find(id int) (model.Pokemon, error) {
 	var pokemon model.Pokemon
 	for _, line := range p.db.Data {
@@ -45,6 +47,7 @@ func (p *PokemonRepository) Find(id int) (model.Pokemon, error) {
 	return pokemon, nil
 }
 
+// Create(Pokemon model.Pokemon): Save a new pokemon in the csv database
 func (p *PokemonRepository) Create(pokemon *model.Pokemon) error {
 	id := strconv.Itoa(pokemon.ID)
 	data := make([]string, 2)

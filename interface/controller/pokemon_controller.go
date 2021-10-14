@@ -14,10 +14,11 @@ type PokemonController struct {
 	pr *repository.Repositories
 }
 
-func (p *PokemonController) initialize(pr *repository.Repositories) {
+func (p *PokemonController) init(pr *repository.Repositories) {
 	p.pr = pr
 }
 
+// HandleGetAllPokemons(w http.ResponseWriter, r *http.Request): Controller to get all pokemons in database
 func (p *PokemonController) HandleGetAllPokemons(w http.ResponseWriter, r *http.Request) {
 	pokemons, err := p.pr.PokemonRepository.FindAll()
 	if err != nil {
@@ -35,6 +36,7 @@ func (p *PokemonController) HandleGetAllPokemons(w http.ResponseWriter, r *http.
 	w.Write(response)
 }
 
+// HandleGetPokemon(w http.ResponseWriter, r *http.Request): Controller to get a specific pokemon, should have an id value in params
 func (p *PokemonController) HandleGetPokemon(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id_str := params["id"]

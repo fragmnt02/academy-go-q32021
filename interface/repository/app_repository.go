@@ -7,12 +7,15 @@ type Repositories struct {
 	PokemonAPIRepository PokemonAPIRepository
 }
 
+// GetRepositories(db datastore.Db): Return all the repositories of the app
 func GetRepositories(db *datastore.Db) *Repositories {
-	repositories := new(Repositories)
 	pokemonAPIRepository := new(PokemonAPIRepository)
-	pokemonAPIRepository.Init()
+	pokemonAPIRepository.init()
+
 	pokemonRepository := new(PokemonRepository)
-	pokemonRepository.Init(db)
+	pokemonRepository.init(db)
+
+	repositories := new(Repositories)
 	repositories.PokemonRepository = *pokemonRepository
 	repositories.PokemonAPIRepository = *pokemonAPIRepository
 	return repositories
