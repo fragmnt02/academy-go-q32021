@@ -3,22 +3,16 @@ package repository
 import (
 	"academy-go-q32021/domain/model"
 	"academy-go-q32021/infrastructure/datastore"
-	"encoding/csv"
-	"encoding/json"
 	"errors"
-	"io"
-	"os"
 	"strconv"
 )
 
 type PokemonRepository struct {
-	db  *datastore.Db
-	api *datastore.API
+	db *datastore.Db
 }
 
-func (p *PokemonRepository) Init(db *datastore.Db, api *datastore.API) {
+func (p *PokemonRepository) Init(db *datastore.Db) {
 	p.db = db
-	p.api = api
 }
 
 func (p *PokemonRepository) FindAll() ([]model.Pokemon, error) {
@@ -53,42 +47,9 @@ func (p *PokemonRepository) Find(id int) (model.Pokemon, error) {
 
 func (p *PokemonRepository) Create(pokemon *model.Pokemon) error {
 	id := strconv.Itoa(pokemon.ID)
-	var data = make([]string, 2)
+	data := make([]string, 2)
 	data[0] = id
 	data[1] = pokemon.Name
-	p.db.Data = append(p.db.Data, data)
-	f, err := os.Create("db.csv")
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-
-	w := csv.NewWriter(f)
-	defer w.Flush()
-
-	for _, record := range p.db.Data {
-		if err := w.Write(record); err != nil {
-			return err
-		}
-	}
+	p.db.WriteLine(data)
 	return nil
-}
-
-func (p *PokemonRepository) FindInAPI(id int) (model.Pokemon, error) {
-	var pokemon model.Pokemon
-	id_pokemon := strconv.Itoa(id)
-	res, err := p.api.Get(id_pokemon)
-	if err != nil {
-		return pokemon, err
-	}
-	defer res.Body.Close()
-	body, err := io.ReadAll(res.Body)
-	if err != nil {
-		return pokemon, err
-	}
-	var pokemonData = &model.Pokemon{}
-	json.Unmarshal([]byte(string(body)), &pokemonData)
-	pokemon.ID = pokemonData.ID
-	pokemon.Name = pokemonData.Name
-	return pokemon, nil
 }

@@ -17,14 +17,12 @@ var mockDB = datastore.Db{
 	Data: [][]string{{"1", "test pokemon 1"}, {"2", "test pokemon 2"}},
 }
 
-var mockAPI datastore.API
-
 var mockRepository repository.Repositories
 
 var mockController controller.Controllers
 
 func TestHandleGetAllPokemons(t *testing.T) {
-	mockRepository = *repository.GetRepositories(&mockDB, &mockAPI)
+	mockRepository = *repository.GetRepositories(&mockDB)
 	mockController = *controller.GetControllers(&mockRepository)
 
 	req := httptest.NewRequest("GET", "/", nil)
@@ -49,7 +47,7 @@ func TestHandleGetAllPokemons(t *testing.T) {
 }
 
 func TestHandleGetPokemon(t *testing.T) {
-	mockRepository = *repository.GetRepositories(&mockDB, &mockAPI)
+	mockRepository = *repository.GetRepositories(&mockDB)
 	mockController = *controller.GetControllers(&mockRepository)
 	req := httptest.NewRequest("GET", "/1", nil)
 	vars := map[string]string{

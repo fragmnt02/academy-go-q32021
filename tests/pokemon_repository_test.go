@@ -6,7 +6,7 @@ import (
 )
 
 func TestFind(t *testing.T) {
-	mockRepository = *repository.GetRepositories(&mockDB, &mockAPI)
+	mockRepository = *repository.GetRepositories(&mockDB)
 	pokemon, err := mockRepository.PokemonRepository.Find(1)
 	if err != nil {
 		t.Fatalf(err.Error())
@@ -18,7 +18,7 @@ func TestFind(t *testing.T) {
 }
 
 func TestFindAll(t *testing.T) {
-	mockRepository = *repository.GetRepositories(&mockDB, &mockAPI)
+	mockRepository = *repository.GetRepositories(&mockDB)
 	pokemons, err := mockRepository.PokemonRepository.FindAll()
 	if err != nil {
 		t.Fatalf(err.Error())
@@ -30,9 +30,8 @@ func TestFindAll(t *testing.T) {
 }
 
 func TestFindInAPI(t *testing.T) {
-	mockAPI.Init("https://pokeapi.co/api/v2/pokemon/")
-	mockRepository = *repository.GetRepositories(&mockDB, &mockAPI)
-	pokemon, err := mockRepository.PokemonRepository.FindInAPI(1)
+	mockRepository = *repository.GetRepositories(&mockDB)
+	pokemon, err := mockRepository.PokemonAPIRepository.Find(1)
 	if err != nil {
 		t.Fatalf(err.Error())
 	}

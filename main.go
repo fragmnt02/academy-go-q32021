@@ -10,10 +10,8 @@ import (
 
 func main() {
 	db := new(datastore.Db)
-	db.Init()
-	api := new(datastore.API)
-	api.Init("https://pokeapi.co/api/v2/pokemon/")
-	repositories := repository.GetRepositories(db, api)
+	db.Init("db.csv")
+	repositories := repository.GetRepositories(db)
 	controllers := controller.GetControllers(repositories)
 	router := router.GetRouter(controllers)
 	http.ListenAndServe(":8000", router)

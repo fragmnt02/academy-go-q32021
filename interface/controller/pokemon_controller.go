@@ -48,7 +48,7 @@ func (p *PokemonController) HandleGetPokemon(w http.ResponseWriter, r *http.Requ
 
 	if err != nil {
 		if err.Error() == "pokemon not found" {
-			pokemonApi, err := p.pr.PokemonRepository.FindInAPI(id)
+			pokemonApi, err := p.pr.PokemonAPIRepository.Find(id)
 			if err != nil {
 				w.WriteHeader(http.StatusNotFound)
 				return
