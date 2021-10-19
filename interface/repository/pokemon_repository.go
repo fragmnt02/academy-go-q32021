@@ -4,6 +4,7 @@ import (
 	"academy-go-q32021/domain/model"
 	"academy-go-q32021/infrastructure/datastore"
 	"errors"
+	"math"
 	"strconv"
 )
 
@@ -54,5 +55,53 @@ func (p *PokemonRepository) Create(pokemon *model.Pokemon) error {
 	data[0] = id
 	data[1] = pokemon.Name
 	p.db.WriteLine(data)
+	return nil
+}
+
+func (p *PokemonRepository) FindAllConcurrently(items int, itemsPerWorker int, typeValue string) []model.Pokemon {
+	jobs := make(chan []string, items)
+	results := make(chan []string, items)
+	workers := math.Ceil(float64(items) / float64(itemsPerWorker))
+	for i := 0; i <= int(workers); i++ {
+		go worker(jobs, results, typeValue)
+	}
+
+	for index, line := range p.db.Data {
+		jobs <- line
+		if index >= items {
+			break
+		}
+	}
+
+	close(jobs)
+
+	var result = []model.Pokemon{}
+
+	for a := 1; a <= items; a++ {
+		data := <-results
+		if data != nil {
+			id, _ := strconv.Atoi(data[0])
+			result = append(result, model.Pokemon{
+				ID:   id,
+				Name: data[1],
+			})
+		}
+	}
+
+	return result
+}
+
+func worker(jobs <-chan []string, results chan<- []string, divisibility string) {
+	for job := range jobs {
+		results <- getItem(job, divisibility)
+	}
+}
+
+func getItem(item []string, div string) []string {
+	id, _ := strconv.Atoi(item[0])
+	var isEven = id%2 == 0
+	if (div == "odd" && !isEven) || (div == "even" && isEven) {
+		return item
+	}
 	return nil
 }

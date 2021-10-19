@@ -9,5 +9,6 @@ import (
 func getPokemonRouter(r *mux.Router, controllers *controller.Controllers) {
 	r.HandleFunc("", controllers.PokemonController.HandleGetAllPokemons)
 	r.HandleFunc("/", controllers.PokemonController.HandleGetAllPokemons)
+	r.HandleFunc("/concurrency", controllers.PokemonController.HandleGetAllPokemonsConcurrently)
 	r.HandleFunc("/{id}", controllers.PokemonController.HandleGetPokemon)
 }
